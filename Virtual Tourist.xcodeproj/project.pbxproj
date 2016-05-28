@@ -15,6 +15,10 @@
 		DEEBF8E91CF8CCDD001C2822 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DEEBF8E71CF8CCDD001C2822 /* LaunchScreen.storyboard */; };
 		DEEBF8F41CF8CCDD001C2822 /* Virtual_TouristTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBF8F31CF8CCDD001C2822 /* Virtual_TouristTests.swift */; };
 		DEEBF8FF1CF8CCDD001C2822 /* Virtual_TouristUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBF8FE1CF8CCDD001C2822 /* Virtual_TouristUITests.swift */; };
+		DEEBF9131CF9306A001C2822 /* Photo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBF90F1CF9306A001C2822 /* Photo+CoreDataProperties.swift */; };
+		DEEBF9141CF9306A001C2822 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBF9101CF9306A001C2822 /* Photo.swift */; };
+		DEEBF9151CF9306A001C2822 /* Pin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBF9111CF9306A001C2822 /* Pin+CoreDataProperties.swift */; };
+		DEEBF9161CF9306A001C2822 /* Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBF9121CF9306A001C2822 /* Pin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +53,10 @@
 		DEEBF8FA1CF8CCDD001C2822 /* Virtual TouristUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Virtual TouristUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEEBF8FE1CF8CCDD001C2822 /* Virtual_TouristUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Virtual_TouristUITests.swift; sourceTree = "<group>"; };
 		DEEBF9001CF8CCDD001C2822 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DEEBF90F1CF9306A001C2822 /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Photo+CoreDataProperties.swift"; path = "../Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DEEBF9101CF9306A001C2822 /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Photo.swift; path = ../Photo.swift; sourceTree = "<group>"; };
+		DEEBF9111CF9306A001C2822 /* Pin+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Pin+CoreDataProperties.swift"; path = "../Pin+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DEEBF9121CF9306A001C2822 /* Pin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Pin.swift; path = ../Pin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +140,9 @@
 		DEEBF90C1CF92251001C2822 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				DEEBF9171CF930D4001C2822 /* Generated */,
+				DEEBF9101CF9306A001C2822 /* Photo.swift */,
+				DEEBF9121CF9306A001C2822 /* Pin.swift */,
 				DEEBF8E21CF8CCDD001C2822 /* Virtual_Tourist.xcdatamodeld */,
 			);
 			name = Model;
@@ -150,6 +161,15 @@
 			children = (
 			);
 			name = Controller;
+			sourceTree = "<group>";
+		};
+		DEEBF9171CF930D4001C2822 /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				DEEBF90F1CF9306A001C2822 /* Photo+CoreDataProperties.swift */,
+				DEEBF9111CF9306A001C2822 /* Pin+CoreDataProperties.swift */,
+			);
+			name = Generated;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -283,9 +303,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEEBF9161CF9306A001C2822 /* Pin.swift in Sources */,
 				DEEBF8DE1CF8CCDD001C2822 /* ViewController.swift in Sources */,
+				DEEBF9151CF9306A001C2822 /* Pin+CoreDataProperties.swift in Sources */,
 				DEEBF8E41CF8CCDD001C2822 /* Virtual_Tourist.xcdatamodeld in Sources */,
+				DEEBF9131CF9306A001C2822 /* Photo+CoreDataProperties.swift in Sources */,
 				DEEBF8DC1CF8CCDD001C2822 /* AppDelegate.swift in Sources */,
+				DEEBF9141CF9306A001C2822 /* Photo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
