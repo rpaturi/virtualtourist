@@ -99,13 +99,14 @@
 		DEEBF8DA1CF8CCDD001C2822 /* Virtual Tourist */ = {
 			isa = PBXGroup;
 			children = (
+				DEEBF90C1CF92251001C2822 /* Model */,
+				DEEBF90D1CF9225F001C2822 /* View */,
+				DEEBF90E1CF92265001C2822 /* Controller */,
 				DEEBF8DB1CF8CCDD001C2822 /* AppDelegate.swift */,
-				DEEBF8DD1CF8CCDD001C2822 /* ViewController.swift */,
-				DEEBF8DF1CF8CCDD001C2822 /* Main.storyboard */,
 				DEEBF8E51CF8CCDD001C2822 /* Assets.xcassets */,
+				DEEBF8DF1CF8CCDD001C2822 /* Main.storyboard */,
 				DEEBF8E71CF8CCDD001C2822 /* LaunchScreen.storyboard */,
 				DEEBF8EA1CF8CCDD001C2822 /* Info.plist */,
-				DEEBF8E21CF8CCDD001C2822 /* Virtual_Tourist.xcdatamodeld */,
 			);
 			path = "Virtual Tourist";
 			sourceTree = "<group>";
@@ -126,6 +127,29 @@
 				DEEBF9001CF8CCDD001C2822 /* Info.plist */,
 			);
 			path = "Virtual TouristUITests";
+			sourceTree = "<group>";
+		};
+		DEEBF90C1CF92251001C2822 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				DEEBF8E21CF8CCDD001C2822 /* Virtual_Tourist.xcdatamodeld */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		DEEBF90D1CF9225F001C2822 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DEEBF8DD1CF8CCDD001C2822 /* ViewController.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		DEEBF90E1CF92265001C2822 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
