@@ -34,4 +34,11 @@ extension FlickrClient {
         static let DisableJSONCallback = "1" /* 1 means "yes" */
         static let PhotoSearchMethod = "flickr.photos.search"
     }
+    
+    struct JSONResponseKeys {
+        static let ID = "id"
+        static let FarmID = "farm"
+        static let ServerID = "server"
+        static let Secret = "secret"
+    }
 }
