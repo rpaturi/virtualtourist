@@ -11,8 +11,8 @@
 		DE88B9671CFE8DEF0090008D /* FlickrConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE88B9641CFE8DEF0090008D /* FlickrConvenience.swift */; };
 		DE88B9681CFE8DEF0090008D /* FlickrConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE88B9651CFE8DEF0090008D /* FlickrConstants.swift */; };
 		DE88B96A1CFF944A0090008D /* PhotoAlbumVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE88B9691CFF944A0090008D /* PhotoAlbumVC.swift */; };
-		DE88B9711CFFA5900090008D /* Pin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE88B96F1CFFA5900090008D /* Pin+CoreDataProperties.swift */; };
 		DE88B9721CFFA5900090008D /* Photo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE88B9701CFFA5900090008D /* Photo+CoreDataProperties.swift */; };
+		DE88B9761D00F9560090008D /* Pin+CoreDataProperties 16-31-08-938.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE88B9751D00F9560090008D /* Pin+CoreDataProperties 16-31-08-938.swift */; };
 		DEEBF8DC1CF8CCDD001C2822 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBF8DB1CF8CCDD001C2822 /* AppDelegate.swift */; };
 		DEEBF8DE1CF8CCDD001C2822 /* TravelLocationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBF8DD1CF8CCDD001C2822 /* TravelLocationVC.swift */; };
 		DEEBF8E11CF8CCDD001C2822 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DEEBF8DF1CF8CCDD001C2822 /* Main.storyboard */; };
@@ -47,8 +47,8 @@
 		DE88B9641CFE8DEF0090008D /* FlickrConvenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrConvenience.swift; sourceTree = "<group>"; };
 		DE88B9651CFE8DEF0090008D /* FlickrConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrConstants.swift; sourceTree = "<group>"; };
 		DE88B9691CFF944A0090008D /* PhotoAlbumVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAlbumVC.swift; sourceTree = "<group>"; };
-		DE88B96F1CFFA5900090008D /* Pin+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Pin+CoreDataProperties.swift"; path = "../Pin+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DE88B9701CFFA5900090008D /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Photo+CoreDataProperties.swift"; path = "../Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DE88B9751D00F9560090008D /* Pin+CoreDataProperties 16-31-08-938.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Pin+CoreDataProperties 16-31-08-938.swift"; path = "../Pin+CoreDataProperties 16-31-08-938.swift"; sourceTree = "<group>"; };
 		DEEBF8D81CF8CCDD001C2822 /* Virtual Tourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Virtual Tourist.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEEBF8DB1CF8CCDD001C2822 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DEEBF8DD1CF8CCDD001C2822 /* TravelLocationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelLocationVC.swift; sourceTree = "<group>"; };
@@ -178,7 +178,7 @@
 		DEEBF9171CF930D4001C2822 /* Generated */ = {
 			isa = PBXGroup;
 			children = (
-				DE88B96F1CFFA5900090008D /* Pin+CoreDataProperties.swift */,
+				DE88B9751D00F9560090008D /* Pin+CoreDataProperties 16-31-08-938.swift */,
 				DE88B9701CFFA5900090008D /* Photo+CoreDataProperties.swift */,
 			);
 			name = Generated;
@@ -315,10 +315,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE88B9761D00F9560090008D /* Pin+CoreDataProperties 16-31-08-938.swift in Sources */,
 				DEEBF9161CF9306A001C2822 /* Pin.swift in Sources */,
 				DEEBF8DE1CF8CCDD001C2822 /* TravelLocationVC.swift in Sources */,
 				DEEBF8E41CF8CCDD001C2822 /* Virtual_Tourist.xcdatamodeld in Sources */,
-				DE88B9711CFFA5900090008D /* Pin+CoreDataProperties.swift in Sources */,
 				DE88B96A1CFF944A0090008D /* PhotoAlbumVC.swift in Sources */,
 				DEEBF8DC1CF8CCDD001C2822 /* AppDelegate.swift in Sources */,
 				DE88B9681CFE8DEF0090008D /* FlickrConstants.swift in Sources */,
