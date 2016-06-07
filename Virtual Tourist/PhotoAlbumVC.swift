@@ -11,13 +11,40 @@ import MapKit
 import CoreData
 
 class PhotoAlbumVC: UIViewController, MKMapViewDelegate {
-
+    
+    var location: CLLocationCoordinate2D?
+    
     @IBOutlet weak var mapView: MKMapView!
+    
+    override func viewWillAppear(animated: Bool) {
+        
+        super.viewWillAppear(animated)
+        
+        //Make sure the location information was sent from TravelLocationVC
+        if let theLocation = location {
+            //Set map coordinates and zoom into the location
+            self.mapView.centerCoordinate = theLocation
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = theLocation
+            self.mapView.addAnnotation(annotation)
+            
+            let latDegrees = 0.05
+            let longDegrees = 0.05
+            
+            let span: MKCoordinateSpan = MKCoordinateSpanMake(latDegrees, longDegrees)
+            let region: MKCoordinateRegion = MKCoordinateRegionMake(theLocation, span)
+            
+            self.mapView.setRegion(region, animated: true)
+        }
+    }
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
         mapView.mapType = .Standard
+        
+        print(location)
     }
 }

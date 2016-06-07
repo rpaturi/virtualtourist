@@ -17,7 +17,8 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
     var fetchResultsController: NSFetchedResultsController!
     
     let appDel = UIApplication.sharedApplication().delegate as! AppDelegate
-
+    
+    var locationCoordinate: CLLocationCoordinate2D?
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -47,9 +48,11 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
             
             //Convert location to CLCoordinate2D
             let touchCoordinate = mapView.convertPoint(touchPoint, toCoordinateFromView: self.mapView)
+            locationCoordinate = touchCoordinate
             
             //Create CLLocation to use for reverseGeocodeLocation
             let touchCLLocation = CLLocation(latitude: touchCoordinate.latitude, longitude: touchCoordinate.longitude)
+            
             
             geocoder.reverseGeocodeLocation(touchCLLocation) { (placemarks, error) in
                 guard (error == nil) else {
@@ -93,7 +96,38 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
                     print("We couldnt save the pin!")
                     abort()
                 }
+                
+                //Send CLCoordinate2D location information to the PhotoAlbumVC
+                self.performSegueWithIdentifier("sendPinLocation", sender: self.locationCoordinate as? AnyObject)
             }
+        }
+    }
+    
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation is MKUserLocation {
+            return nil
+        }
+        
+        let pinReuseID = "pin"
+        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(pinReuseID) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: pinReuseID)
+            pinView?.animatesDrop = true
+        } else {
+            pinView?.annotation = annotation
+        }
+        
+        return pinView
+    }
+    
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        if view.annotation != nil {
+            locationCoordinate = view.annotation?.coordinate
+            
+            self.performSegueWithIdentifier("sendPinLocation", sender: self.locationCoordinate as? AnyObject)
+        } else {
+            print("Sorry we couldnt send the annoation location via segue")
         }
     }
     
@@ -135,6 +169,16 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
         controller.delegate = self
         
         fetchResultsController = controller
+    }
+    
+    //MARK: Send loaction information via "sendPinLocation" segue
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "sendPinLocation" {
+            if let photoVC = segue.destinationViewController as? PhotoAlbumVC {
+                photoVC.location = locationCoordinate
+            }
+        }
     }
 }
 
