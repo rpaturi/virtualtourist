@@ -71,36 +71,67 @@
                                 </connections>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="VOK-qL-yA6">
-                                <rect key="frame" x="0.0" y="220" width="600" height="380"/>
+                                <rect key="frame" x="0.0" y="220" width="600" height="337"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="oTp-7j-uqf">
-                                    <size key="itemSize" width="100" height="100"/>
+                                    <size key="itemSize" width="125" height="125"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="fBT-hi-v4r">
-                                        <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="FlickrPhotoCell" id="fBT-hi-v4r" customClass="FlickrPhotoCell" customModule="Virtual_Tourist" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="PlaceholderPhoto" translatesAutoresizingMaskIntoConstraints="NO" id="tWj-UT-FCz">
+                                                    <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
+                                                </imageView>
+                                            </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="tWj-UT-FCz" secondAttribute="trailing" id="9zp-q7-ZA7"/>
+                                            <constraint firstAttribute="bottom" secondItem="tWj-UT-FCz" secondAttribute="bottom" id="b33-Vv-2qm"/>
+                                            <constraint firstItem="tWj-UT-FCz" firstAttribute="top" secondItem="fBT-hi-v4r" secondAttribute="top" id="fjo-fB-lRm"/>
+                                            <constraint firstItem="tWj-UT-FCz" firstAttribute="leading" secondItem="fBT-hi-v4r" secondAttribute="leading" id="wb7-GM-2kj"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="imageView" destination="tWj-UT-FCz" id="JMC-oQ-FAQ"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="Fd9-qq-qy3" id="CPC-to-nrg"/>
+                                    <outlet property="delegate" destination="Fd9-qq-qy3" id="kgC-Z5-Mm4"/>
+                                </connections>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JQj-7x-dY7">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <color key="backgroundColor" red="0.01176470588" green="0.70196078429999997" blue="0.89411764709999997" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="phs-Gj-gkn"/>
+                                </constraints>
+                                <state key="normal" title="Save Collection">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="VOK-qL-yA6" firstAttribute="leading" secondItem="yXm-ix-WXh" secondAttribute="leading" id="BQu-kY-bVH"/>
-                            <constraint firstItem="TTS-eH-jAh" firstAttribute="top" secondItem="VOK-qL-yA6" secondAttribute="bottom" id="KH3-Fk-tip"/>
+                            <constraint firstItem="TTS-eH-jAh" firstAttribute="top" secondItem="VOK-qL-yA6" secondAttribute="bottom" constant="43" id="5HY-ds-5Fg"/>
+                            <constraint firstAttribute="trailing" secondItem="JQj-7x-dY7" secondAttribute="trailing" id="KPn-Mx-h3N"/>
+                            <constraint firstItem="TTS-eH-jAh" firstAttribute="top" secondItem="JQj-7x-dY7" secondAttribute="bottom" id="KeM-GA-712"/>
                             <constraint firstItem="yLh-Nj-n1S" firstAttribute="leading" secondItem="yXm-ix-WXh" secondAttribute="leading" id="QJt-rD-fKk"/>
-                            <constraint firstAttribute="trailing" secondItem="VOK-qL-yA6" secondAttribute="trailing" id="Ygv-HN-Xzo"/>
+                            <constraint firstItem="VOK-qL-yA6" firstAttribute="trailing" secondItem="JQj-7x-dY7" secondAttribute="trailing" id="XcD-a0-UMC"/>
+                            <constraint firstItem="VOK-qL-yA6" firstAttribute="top" secondItem="yLh-Nj-n1S" secondAttribute="bottom" id="b41-Y4-dWz"/>
                             <constraint firstItem="yLh-Nj-n1S" firstAttribute="top" secondItem="4eN-1u-B5m" secondAttribute="bottom" id="cxp-UI-Y3P"/>
-                            <constraint firstItem="VOK-qL-yA6" firstAttribute="top" secondItem="yLh-Nj-n1S" secondAttribute="bottom" id="e1s-JE-NcQ"/>
-                            <constraint firstItem="yLh-Nj-n1S" firstAttribute="trailing" secondItem="VOK-qL-yA6" secondAttribute="trailing" id="hFj-3o-trl"/>
                             <constraint firstAttribute="trailing" secondItem="yLh-Nj-n1S" secondAttribute="trailing" id="kRQ-s0-piS"/>
+                            <constraint firstItem="VOK-qL-yA6" firstAttribute="leading" secondItem="JQj-7x-dY7" secondAttribute="leading" id="lYh-Ra-oDZ"/>
+                            <constraint firstItem="JQj-7x-dY7" firstAttribute="leading" secondItem="yXm-ix-WXh" secondAttribute="leading" id="ra7-eI-geg"/>
                         </constraints>
                     </view>
                     <connections>
@@ -130,4 +161,7 @@
             <point key="canvasLocation" x="640" y="527"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="PlaceholderPhoto" width="88" height="88"/>
+    </resources>
 </document>

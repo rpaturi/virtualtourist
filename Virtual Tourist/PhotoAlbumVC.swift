@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class PhotoAlbumVC: UIViewController, MKMapViewDelegate {
+class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
     
     var location: CLLocationCoordinate2D?
     
@@ -47,4 +47,16 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate {
         
         print(location)
     }
+    
+    //MARK: UICollectionView implementation 
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("FlickrPhotoCell", forIndexPath: indexPath) as! FlickrPhotoCell
+        
+        return cell
+    }
+    
 }
