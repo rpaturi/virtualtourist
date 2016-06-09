@@ -10,11 +10,13 @@ import UIKit
 import MapKit
 import CoreData
 
-class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
-    
+class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, NSFetchedResultsControllerDelegate{
+    let fc = NSFetchedResultsController()
     var location: CLLocationCoordinate2D?
     
+    @IBOutlet weak var theCollectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
+    
     
     override func viewWillAppear(animated: Bool) {
         
@@ -37,6 +39,8 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
             
             self.mapView.setRegion(region, animated: true)
         }
+        
+        fc.delegate = CoreDataCollectionViewDelegate(collectionView: theCollectionView)
     }
     
     override func viewDidLoad() {
@@ -48,7 +52,7 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         print(location)
     }
     
-    //MARK: UICollectionView implementation 
+    //MARK: UICollectionView implementation
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 1
     }
@@ -60,3 +64,4 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     }
     
 }
+
