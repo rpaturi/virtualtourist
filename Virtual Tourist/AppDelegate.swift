@@ -111,3 +111,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+let appDel = UIApplication.sharedApplication().delegate as! AppDelegate
+

@@ -16,13 +16,13 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
     
     var fetchResultsController: NSFetchedResultsController!
     
-    let appDel = UIApplication.sharedApplication().delegate as! AppDelegate
-    
+    var pin: Pin?
+    var pinArray: [Pin]?
     var locationCoordinate: CLLocationCoordinate2D?
     
-    @IBOutlet weak var mapView: MKMapView!
-    
     let flickrClient = FlickrClient()
+    
+    @IBOutlet weak var mapView: MKMapView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,10 +87,11 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
                 }
                 self.mapView.addAnnotation(annotation)
                 
-                Pin(latitude: touchCoordinate.latitude, longitude: touchCoordinate.longitude, title: annotation.title!, context: self.appDel.managedObjectContext)
+                self.pin = Pin(latitude: touchCoordinate.latitude, longitude: touchCoordinate.longitude, title: annotation.title!, context: appDel.managedObjectContext)
+                print(self.pin)
                 
                 do {
-                    try self.appDel.managedObjectContext.save()
+                    try appDel.managedObjectContext.save()
                     print("we saved the pin!")
                 } catch {
                     print("We couldnt save the pin!")
@@ -98,7 +99,7 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
                 }
                 
                 //Send CLCoordinate2D location information to the PhotoAlbumVC
-                self.performSegueWithIdentifier("sendPinLocation", sender: self.locationCoordinate as? AnyObject)
+                self.performSegueWithIdentifier("sendPinLocation", sender: sender)
             }
         }
     }
@@ -123,16 +124,27 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         if view.annotation != nil {
+            
             locationCoordinate = view.annotation?.coordinate
             
-            self.performSegueWithIdentifier("sendPinLocation", sender: self.locationCoordinate as? AnyObject)
+            if let pinArry = pinArray {
+                for pin in pinArry {
+                    if pin.latitude == locationCoordinate!.latitude && pin.longitude == locationCoordinate!.longitude {
+                        self.pin = pin
+                        //print("I am print the \(self.pin)")
+                    }
+                }
+            }
+            print("I am printing the pin from didSelectAnnotation: \(pin)")
+            self.performSegueWithIdentifier("sendPinLocation", sender: self)
         } else {
             print("Sorry we couldnt send the annoation location via segue")
         }
     }
     
-    // MARK: - Fetchresults Controller
+    // MARK: - Fetch Results Controller
     
+    //Execute fetchRequest and use results returned from setFetchRequest
     func attemptFetch() {
         setFetchRequest()
         
@@ -140,6 +152,8 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
             try self.fetchResultsController.performFetch()
             
             let results = fetchResultsController.fetchedObjects as? [Pin]
+            //Store Pin array
+            self.pinArray = results
             
             if let result = results {
                 for pin in result {
@@ -158,6 +172,7 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
         
     }
     
+    // Set up fetch request
     func setFetchRequest() {
         let fetchRequest = NSFetchRequest(entityName: "Pin")
         
@@ -176,6 +191,8 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "sendPinLocation" {
             if let photoVC = segue.destinationViewController as? PhotoAlbumVC {
+                photoVC.selectedPin = pin
+                print("I am printing the pin from photoVC: \(photoVC.selectedPin)")
                 photoVC.location = locationCoordinate
             }
         }

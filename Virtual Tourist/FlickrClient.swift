@@ -9,6 +9,7 @@
 import Foundation
 
 class FlickrClient {
+    var imageCache = NSCache()
     
     init() {
         
@@ -66,5 +67,15 @@ class FlickrClient {
         task.resume()
         return task
     }
+    
+    //MARK: Shared Instance
+    
+    class func sharedInstance() -> FlickrClient {
+        struct Singleton {
+            static var sharedInstance = FlickrClient()
+        }
+        return Singleton.sharedInstance
+    }
+
     
 }

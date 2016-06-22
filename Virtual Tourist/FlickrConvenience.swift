@@ -11,7 +11,7 @@ import CoreData
 import MapKit
 
 extension FlickrClient {
-    func searchPhotoByLocation(latitude: Float, longitude: Float, completionHandlerForSearch: (result: AnyObject?, error: NSError?) -> Void) {
+    func searchPhotoByLocation(latitude: Double, longitude: Double, completionHandlerForSearch: (result: AnyObject?, error: NSError?) -> Void) {
         let parameters: [String:AnyObject] = [
             FlickrClient.FlickrParameterKeys.Method : FlickrClient.FlickrParameterValues.PhotoSearchMethod,
             FlickrClient.FlickrParameterKeys.ApiKey: FlickrClient.FlickrParameterValues.APIKey,
@@ -47,11 +47,26 @@ extension FlickrClient {
                 return
             }
             
-            print(photoArray)
+            //print(photoArray)
             
-            completionHandlerForSearch(result: photosArray, error: nil)
+            let photoDownLinks = self.createDownloadLinkFromResults(photoArray)
+            
+            completionHandlerForSearch(result: photoDownLinks, error: nil)
             
         }
+    }
+    
+    func createDownloadLinkFromResults(result: [[String:AnyObject]]) -> [String] {
+        
+        var photoDownloadLinks: [String] = []
+        for item in result {
+            if let farmID = item[JSONResponseKeys.FarmID], let serverID = item[JSONResponseKeys.ServerID], let id = item[JSONResponseKeys.ID], let secret = item[JSONResponseKeys.Secret] {
+                let downloadURL = "https://farm\(farmID).staticflickr.com/\(serverID)/\(id)_\(secret).jpg"
+                //print(downloadURL)
+                photoDownloadLinks.append(downloadURL)
+            }
+        }
+        return photoDownloadLinks
     }
     
 }
