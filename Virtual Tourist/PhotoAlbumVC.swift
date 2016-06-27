@@ -62,6 +62,7 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         mapView.mapType = .Standard
         
         attemptPinFetch()
+        attemptPhotoFetch()
         
         print(location)
         //print("I am printing the selectedPin from the PhotoAlbumVC: \(selectedPin)")
@@ -86,7 +87,8 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("FlickrPhotoCell", forIndexPath: indexPath) as! FlickrPhotoCell
-        
+        let image = downloadedPhotos[indexPath.row]
+        cell.imageView.image = UIImage(data: image.photo!)
         return cell
     }
     
@@ -144,6 +146,41 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         fetchResultsController = controller
     }
     
+    func attemptPhotoFetch() {
+        setFetchRequest("Photo", sortDescriptorKey: "photoURL")
+        
+        do {
+            try self.fetchResultsController.performFetch()
+            
+            let results = fetchResultsController.fetchedObjects as? [Photo]
+            
+            if let result = results {
+                print(result.count)
+                for photo in result {
+                    downloadedPhotos.append(photo)
+                }
+            }
+        } catch {
+            print("Error executing fetch request: \(error)")
+        }
+    }
+    
+    func setPhotoRequest(entityName: String, sortDescriptorKey: String) {
+        let fetchRequest = NSFetchRequest(entityName: entityName)
+        
+        let sortDescriptor = NSSortDescriptor(key: sortDescriptorKey, ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        let predicate = NSPredicate(format: "(pin MATCHES[cd] $pin)")
+        fetchRequest.predicate = predicate.predicateWithSubstitutionVariables(["pin": selectedPin])
+        
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: appDel.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+        
+        controller.delegate = self
+        
+        fetchResultsController = controller
+    }
+    
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
         theCollectionView.reloadData()
     }
@@ -165,12 +202,12 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                         let url = NSURL(string: link)
                         if let url = url {
                             let data = NSData(contentsOfURL: url)
-                            let photo = Photo(data: data!, context: appDel.managedObjectContext)
+                            let photo = Photo(data: data!, photoURL: link, context: appDel.managedObjectContext)
                             photo.pin = self.selectedPin
                             
                             let image = UIImage(data: data!)
                 
-                            FlickrClient.sharedInstance().imageCache.setObject(image!, forKey: url)
+                            FlickrClient.sharedInstance().imageCache.setObject(image!, forKey: link)
                             
                             print("We inserted photo into context")
                         } else {
