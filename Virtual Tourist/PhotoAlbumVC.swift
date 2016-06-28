@@ -64,7 +64,7 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         attemptPinFetch()
         attemptPhotoFetch()
         
-        print(location)
+        //print(location)
         //print("I am printing the selectedPin from the PhotoAlbumVC: \(selectedPin)")
     }
     
@@ -79,6 +79,7 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         
         if theSelectedPin.photos?.count > 0 {
             count = selectedPin.photos?.count
+            print("the count is: \(count)")
         } else {
             count = 0
         }
@@ -123,7 +124,7 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                                 //Edit Collection Button should be displayed
                             }
                         }
-                        print("I am print the \(selectedPin)")
+                        //print("I am print the \(selectedPin)")
                     }
                 }
             }
@@ -147,7 +148,9 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     }
     
     func attemptPhotoFetch() {
-        setFetchRequest("Photo", sortDescriptorKey: "photoURL")
+        setPhotoRequest("Photo", sortDescriptorKey: "photoURL")
+        
+        //setPhotoRequest("Photo", sortDescriptorKey: "photoURL")
         
         do {
             try self.fetchResultsController.performFetch()
@@ -171,8 +174,10 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         let sortDescriptor = NSSortDescriptor(key: sortDescriptorKey, ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
-        let predicate = NSPredicate(format: "(pin MATCHES[cd] $pin)")
-        fetchRequest.predicate = predicate.predicateWithSubstitutionVariables(["pin": selectedPin])
+        let predicate = NSPredicate(format: "pin = %@", selectedPin)
+        fetchRequest.predicate = predicate
+//        let predicate = NSPredicate(format: "(pin MATCHES[cd] $pin)")
+//        fetchRequest.predicate = predicate.predicateWithSubstitutionVariables(["pin": selectedPin])
         
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: appDel.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
         

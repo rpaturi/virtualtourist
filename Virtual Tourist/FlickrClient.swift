@@ -34,7 +34,7 @@ class FlickrClient {
     
     func taskForGetMethod(method: String, parameters: [String:AnyObject], completionHandlerForGet: (result: AnyObject?, error: NSError?) -> Void) -> NSURLSessionDataTask {
         let request = NSMutableURLRequest(URL: urlFromParameters(FlickrURL.ApiScheme, host: FlickrURL.ApiHost, path: FlickrURL.ApiPath, parameters: parameters, withPathExtension: method))
-        print(request)
+        //print(request)
         let session = NSURLSession.sharedSession()
         
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
