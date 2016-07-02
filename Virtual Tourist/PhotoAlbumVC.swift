@@ -16,10 +16,10 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     var selectedPin : Pin!
     var selectedPhotos: [Photo] = []
     var downloadedPhotos: [Photo] = []
-    
     var linkArray: [String] = []
     var location: CLLocationCoordinate2D?
     
+    @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var theCollectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
     
@@ -55,41 +55,39 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        mapView.mapType = .Standard
+        
+        //Calculating and setting the 2 column layout for collection view
+        let space: CGFloat = 3.0
+        let dimension = (view.frame.size.width - (3 * space)) / 3.0
+        
+        flowLayout.minimumInteritemSpacing = space
+        flowLayout.minimumLineSpacing = space
+        flowLayout.itemSize = CGSizeMake(dimension, dimension)
         
         //Allow user to select multiple photos in collection to delete
         theCollectionView.allowsSelection = true
         theCollectionView.allowsMultipleSelection = true
-        mapView.mapType = .Standard
         
-        attemptPinFetch()
         attemptPhotoFetch()
         
-        //print(location)
-        //print("I am printing the selectedPin from the PhotoAlbumVC: \(selectedPin)")
     }
     
     //MARK: UICollectionView implementation
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let count: Int?
         
-        guard let theSelectedPin = selectedPin else {
-            print("There was no selected pin")
+        if let frc = fetchResultsController {
+            return frc.sections![section].numberOfObjects;
+        }else{
             return 0
         }
-        
-        if theSelectedPin.photos?.count > 0 {
-            count = selectedPin.photos?.count
-            print("the count is: \(count)")
-        } else {
-            count = 0
-        }
-        return count!
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let photo = fetchResultsController.objectAtIndexPath(indexPath) as! Photo
+        
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("FlickrPhotoCell", forIndexPath: indexPath) as! FlickrPhotoCell
-        let image = downloadedPhotos[indexPath.row]
-        cell.imageView.image = UIImage(data: image.photo!)
+        cell.imageView.image = UIImage(data: photo.photo!)
         return cell
     }
     
@@ -97,70 +95,26 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         
     }
     
-    
-    //Execute fetchRequest and use results returned from setFetchRequest
-    func attemptPinFetch() {
-        setFetchRequest("Pin", sortDescriptorKey: "creationDate")
+    func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
         
-        do {
-            try self.fetchResultsController.performFetch()
-            
-            let results = fetchResultsController.fetchedObjects as? [Pin]
-            
-            if let result = results {
-                for pin in result {
-                    if pin.latitude == location?.latitude && pin.longitude == location?.longitude {
-                        selectedPin = pin
-                        
-                        if let selectedPinPhotos = selectedPin.photos {
-                            print(selectedPinPhotos)
-                            if selectedPinPhotos.count == 0 {
-                                //Download images from Flickr
-                                downloadPhotosFromFlicker()
-                                
-                                //New Collection Button should be displayed
-                            } else {
-                                //Display images from
-                                //Edit Collection Button should be displayed
-                            }
-                        }
-                        //print("I am print the \(selectedPin)")
-                    }
-                }
-            }
-        } catch {
-            print("Error executing fetch request: \(error)")
-        }
-    }
-    
-    // Set up fetch request
-    func setFetchRequest(entityName: String, sortDescriptorKey: String) {
-        let fetchRequest = NSFetchRequest(entityName: entityName)
-        
-        let sortDescriptor = NSSortDescriptor(key: sortDescriptorKey, ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        let controller = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: appDel.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
-        
-        controller.delegate = self
-        
-        fetchResultsController = controller
     }
     
     func attemptPhotoFetch() {
         setPhotoRequest("Photo", sortDescriptorKey: "photoURL")
-        
-        //setPhotoRequest("Photo", sortDescriptorKey: "photoURL")
         
         do {
             try self.fetchResultsController.performFetch()
             
             let results = fetchResultsController.fetchedObjects as? [Photo]
             
-            if let result = results {
-                print(result.count)
-                for photo in result {
-                    downloadedPhotos.append(photo)
+            if selectedPin.photos!.count == 0 {
+                downloadPhotosFromFlicker()
+            } else {
+                if let result = results {
+                    print(result.count)
+                    for photo in result {
+                        downloadedPhotos.append(photo)
+                    }
                 }
             }
         } catch {
@@ -176,8 +130,6 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         
         let predicate = NSPredicate(format: "pin = %@", selectedPin)
         fetchRequest.predicate = predicate
-//        let predicate = NSPredicate(format: "(pin MATCHES[cd] $pin)")
-//        fetchRequest.predicate = predicate.predicateWithSubstitutionVariables(["pin": selectedPin])
         
         let controller = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: appDel.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
         
@@ -199,6 +151,8 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                     print("There was an error: \(error?.localizedDescription)")
                     return
                 }
+                
+                //TODO: Alert if no photos were returned
                 
                 if let results = result {
                     self.linkArray = results as! [String]

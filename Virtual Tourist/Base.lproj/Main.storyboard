@@ -135,6 +135,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="flowLayout" destination="oTp-7j-uqf" id="Pit-gm-cQ1"/>
                         <outlet property="mapView" destination="yLh-Nj-n1S" id="QHv-9M-V7f"/>
                         <outlet property="theCollectionView" destination="VOK-qL-yA6" id="cxc-TY-4og"/>
                     </connections>
