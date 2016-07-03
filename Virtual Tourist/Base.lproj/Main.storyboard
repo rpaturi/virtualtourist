@@ -118,25 +118,47 @@
                                 <state key="normal" title="Save Collection">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="saveCollection:" destination="Fd9-qq-qy3" eventType="touchUpInside" id="bSW-WF-lFz"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gdz-Of-lLi">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <color key="backgroundColor" red="0.01176470588" green="0.70196078429999997" blue="0.89411764709999997" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="CcZ-Qj-lX2"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="WxS-iS-3Hw"/>
+                                </constraints>
+                                <state key="normal" title="Remove Photos">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="removePhotosFromCollection:" destination="Fd9-qq-qy3" eventType="touchUpInside" id="a28-j7-gxQ"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="TTS-eH-jAh" firstAttribute="top" secondItem="VOK-qL-yA6" secondAttribute="bottom" constant="43" id="5HY-ds-5Fg"/>
+                            <constraint firstItem="gdz-Of-lLi" firstAttribute="leading" secondItem="yXm-ix-WXh" secondAttribute="leading" id="F6s-f3-vOX"/>
                             <constraint firstAttribute="trailing" secondItem="JQj-7x-dY7" secondAttribute="trailing" id="KPn-Mx-h3N"/>
                             <constraint firstItem="TTS-eH-jAh" firstAttribute="top" secondItem="JQj-7x-dY7" secondAttribute="bottom" id="KeM-GA-712"/>
                             <constraint firstItem="yLh-Nj-n1S" firstAttribute="leading" secondItem="yXm-ix-WXh" secondAttribute="leading" id="QJt-rD-fKk"/>
                             <constraint firstItem="VOK-qL-yA6" firstAttribute="trailing" secondItem="JQj-7x-dY7" secondAttribute="trailing" id="XcD-a0-UMC"/>
+                            <constraint firstItem="TTS-eH-jAh" firstAttribute="top" secondItem="gdz-Of-lLi" secondAttribute="bottom" id="Zf6-Gd-eEo"/>
                             <constraint firstItem="VOK-qL-yA6" firstAttribute="top" secondItem="yLh-Nj-n1S" secondAttribute="bottom" id="b41-Y4-dWz"/>
                             <constraint firstItem="yLh-Nj-n1S" firstAttribute="top" secondItem="4eN-1u-B5m" secondAttribute="bottom" id="cxp-UI-Y3P"/>
                             <constraint firstAttribute="trailing" secondItem="yLh-Nj-n1S" secondAttribute="trailing" id="kRQ-s0-piS"/>
                             <constraint firstItem="VOK-qL-yA6" firstAttribute="leading" secondItem="JQj-7x-dY7" secondAttribute="leading" id="lYh-Ra-oDZ"/>
                             <constraint firstItem="JQj-7x-dY7" firstAttribute="leading" secondItem="yXm-ix-WXh" secondAttribute="leading" id="ra7-eI-geg"/>
+                            <constraint firstAttribute="trailing" secondItem="gdz-Of-lLi" secondAttribute="trailing" id="wFw-Q9-Fvb"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="flowLayout" destination="oTp-7j-uqf" id="Pit-gm-cQ1"/>
                         <outlet property="mapView" destination="yLh-Nj-n1S" id="QHv-9M-V7f"/>
+                        <outlet property="removePhotoButton" destination="gdz-Of-lLi" id="q8Y-Sm-nka"/>
+                        <outlet property="saveCollectionButton" destination="JQj-7x-dY7" id="9sh-ji-tdV"/>
                         <outlet property="theCollectionView" destination="VOK-qL-yA6" id="cxc-TY-4og"/>
                     </connections>
                 </viewController>

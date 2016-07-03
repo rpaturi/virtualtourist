@@ -14,8 +14,8 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     
     var fetchResultsController: NSFetchedResultsController!
     var selectedPin : Pin!
-    var selectedPhotos: [Photo] = []
-    var downloadedPhotos: [Photo] = []
+    var selectedPhotos: [NSIndexPath] = []
+    
     var linkArray: [String] = []
     var location: CLLocationCoordinate2D?
     
@@ -23,6 +23,8 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     @IBOutlet weak var theCollectionView: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
     
+    @IBOutlet weak var saveCollectionButton: UIButton!
+    @IBOutlet weak var removePhotoButton: UIButton!
     
     override func viewWillAppear(animated: Bool) {
         
@@ -50,6 +52,8 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
             self.mapView.setRegion(region, animated: true)
         }
         
+        attemptPhotoFetch()
+        
     }
     
     override func viewDidLoad() {
@@ -68,6 +72,9 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         //Allow user to select multiple photos in collection to delete
         theCollectionView.allowsSelection = true
         theCollectionView.allowsMultipleSelection = true
+        
+        removePhotoButton.hidden = true
+        saveCollectionButton.hidden = false
         
         attemptPhotoFetch()
         
@@ -93,10 +100,24 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
+        selectedPhotos.append(indexPath)
+        print(selectedPhotos.count)
+        let cell = collectionView.cellForItemAtIndexPath(indexPath)
+        cell?.alpha = 0.5
+        
+        determineButton()
     }
     
     func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
+        if let index = selectedPhotos.indexOf(indexPath) {
+            selectedPhotos.removeAtIndex(index)
+        }
+        print(selectedPhotos.count)
         
+        let cell = collectionView.cellForItemAtIndexPath(indexPath)
+        cell?.alpha = 1.0
+        
+        determineButton()
     }
     
     func attemptPhotoFetch() {
@@ -113,7 +134,7 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                 if let result = results {
                     print(result.count)
                     for photo in result {
-                        downloadedPhotos.append(photo)
+                       
                     }
                 }
             }
@@ -182,6 +203,57 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
             })
         }
     }
+    
+    @IBAction func removePhotosFromCollection(sender: AnyObject) {
+        var photosToDelete: [Photo] = []
+        
+        for indexPath in selectedPhotos {
+            photosToDelete.append(fetchResultsController.objectAtIndexPath(indexPath) as! Photo)
+            theCollectionView.cellForItemAtIndexPath(indexPath)?.alpha = 1.0
+        }
+        
+        for photo in photosToDelete {
+            appDel.managedObjectContext.deleteObject(photo)
+            print("We deleted the photo")
+        }
+        
+        selectedPhotos.removeAll()
+        
+        do {
+            try appDel.managedObjectContext.save()
+            
+        }catch {
+            //EEROR ALERT
+        }
+        
+        determineButton()
+        
+    }
+    
+    
+    @IBAction func saveCollection(sender: AnyObject) {
+        selectedPhotos.removeAll()
+        
+        do {
+            try appDel.managedObjectContext.save()
+            
+        }catch {
+            //EEROR ALERT
+        }
+        
+        determineButton()
+    }
+    
+    func determineButton() {
+        if selectedPhotos.count > 0 {
+            removePhotoButton.hidden = false
+            saveCollectionButton.hidden = true
+        } else {
+            removePhotoButton.hidden = true
+            saveCollectionButton.hidden = false
+        }
+    }
+    
     
     //IF app gets too large, this will clear the cache
     override func didReceiveMemoryWarning() {

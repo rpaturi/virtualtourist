@@ -39,15 +39,11 @@ extension FlickrClient {
                 return
             }
             
-            //print(photosArray)
-            
             guard let photoArray = photosArray["photo"] as? [[String:AnyObject]] else {
                 completionHandlerForSearch(result: nil, error: error)
                 print("We could not find the 'photo' key in \(photosArray["photo"])")
                 return
             }
-            
-            //print(photoArray)
             
             let photoDownLinks = self.createDownloadLinkFromResults(photoArray)
             
