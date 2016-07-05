@@ -52,8 +52,9 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
             self.mapView.setRegion(region, animated: true)
         }
         
-        attemptPhotoFetch()
-        
+        if selectedPin.photos!.count == 0 {
+            downloadPhotosFromFlicker()
+        }
     }
     
     override func viewDidLoad() {
@@ -76,26 +77,40 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         removePhotoButton.hidden = true
         saveCollectionButton.hidden = false
         
-        attemptPhotoFetch()
+        //attemptPhotoFetch()
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print("There was an error")
+        }
         
     }
     
     //MARK: UICollectionView implementation
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        if let frc = fetchResultsController {
-            return frc.sections![section].numberOfObjects;
-        }else{
+        if let photoCount = selectedPin.photos?.count {
+            return photoCount
+        } else {
             return 0
         }
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let photo = fetchResultsController.objectAtIndexPath(indexPath) as! Photo
+        let placeHolderImage = UIImage(named: "PlaceholderPhoto")
+        
+        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("FlickrPhotoCell", forIndexPath: indexPath) as! FlickrPhotoCell
-        cell.imageView.image = UIImage(data: photo.photo!)
+
+        cell.imageView.image = placeHolderImage
+
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            cell .imageView.image = UIImage(data: photo.photo!)
+            
+        })
+        
         return cell
+
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
@@ -120,45 +135,6 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         determineButton()
     }
     
-    func attemptPhotoFetch() {
-        setPhotoRequest("Photo", sortDescriptorKey: "photoURL")
-        
-        do {
-            try self.fetchResultsController.performFetch()
-            
-            let results = fetchResultsController.fetchedObjects as? [Photo]
-            
-            if selectedPin.photos!.count == 0 {
-                downloadPhotosFromFlicker()
-            } else {
-                if let result = results {
-                    print(result.count)
-                    for photo in result {
-                       
-                    }
-                }
-            }
-        } catch {
-            print("Error executing fetch request: \(error)")
-        }
-    }
-    
-    func setPhotoRequest(entityName: String, sortDescriptorKey: String) {
-        let fetchRequest = NSFetchRequest(entityName: entityName)
-        
-        let sortDescriptor = NSSortDescriptor(key: sortDescriptorKey, ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        let predicate = NSPredicate(format: "pin = %@", selectedPin)
-        fetchRequest.predicate = predicate
-        
-        let controller = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: appDel.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
-        
-        controller.delegate = self
-        
-        fetchResultsController = controller
-    }
-    
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
         theCollectionView.reloadData()
     }
@@ -176,22 +152,21 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                 //TODO: Alert if no photos were returned
                 
                 if let results = result {
+                    
                     self.linkArray = results as! [String]
                     
                     for link in self.linkArray {
                         let url = NSURL(string: link)
                         if let url = url {
-                            let data = NSData(contentsOfURL: url)
-                            let photo = Photo(data: data!, photoURL: link, context: appDel.managedObjectContext)
-                            photo.pin = self.selectedPin
+
+                        let data = NSData(contentsOfURL: url)
+                        let photo = Photo(data: data!, photoURL: link, context: appDel.managedObjectContext)
+                        photo.pin = self.selectedPin
+                        
+                        print(self.selectedPin.photos?.count)
                             
-                            let image = UIImage(data: data!)
-                
-                            FlickrClient.sharedInstance().imageCache.setObject(image!, forKey: link)
-                            
-                            print("We inserted photo into context")
                         } else {
-                            //Display error that we wouldnt save the phont
+                            //Display error that we wouldnt save the photo
                             print("Couldnt save the photo")
                         }
                     }
@@ -208,7 +183,7 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         var photosToDelete: [Photo] = []
         
         for indexPath in selectedPhotos {
-            photosToDelete.append(fetchResultsController.objectAtIndexPath(indexPath) as! Photo)
+            photosToDelete.append(fetchedResultsController.objectAtIndexPath(indexPath) as! Photo)
             theCollectionView.cellForItemAtIndexPath(indexPath)?.alpha = 1.0
         }
         
@@ -254,6 +229,21 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         }
     }
     
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        
+        let sortDescriptor = NSSortDescriptor(key: "photoURL", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        let predicate = NSPredicate(format: "pin = %@", self.selectedPin)
+        fetchRequest.predicate = predicate
+        
+        let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: appDel.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+        
+        frc.delegate = self
+        
+        return frc
+    }()
     
     //IF app gets too large, this will clear the cache
     override func didReceiveMemoryWarning() {

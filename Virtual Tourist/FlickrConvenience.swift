@@ -45,9 +45,9 @@ extension FlickrClient {
                 return
             }
             
-            let photoDownLinks = self.createDownloadLinkFromResults(photoArray)
+            let photoDownloadLinks = self.createDownloadLinkFromResults(photoArray)
             
-            completionHandlerForSearch(result: photoDownLinks, error: nil)
+            completionHandlerForSearch(result: photoDownloadLinks, error: nil)
             
         }
     }
