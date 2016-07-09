@@ -142,7 +142,7 @@
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="saveCollection:" destination="Fd9-qq-qy3" eventType="touchUpInside" id="bSW-WF-lFz"/>
+                                    <action selector="newCollection:" destination="Fd9-qq-qy3" eventType="touchUpInside" id="ws3-qi-dhQ"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gdz-Of-lLi">

@@ -145,8 +145,9 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
                             }catch {
                                 //EEROR ALERT
                             }
-                            
-                            mapView.removeAnnotation(view.annotation!)
+                            dispatch_async(dispatch_get_main_queue(), { 
+                                mapView.removeAnnotation(view.annotation!)
+                            })
                         } else {
                             self.pin = pin
                             self.performSegueWithIdentifier("sendPinLocation", sender: self)

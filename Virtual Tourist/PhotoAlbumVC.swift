@@ -88,6 +88,7 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     
     //MARK: UICollectionView implementation
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
         if let photoCount = selectedPin.photos?.count {
             return photoCount
         } else {
@@ -96,18 +97,13 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let placeHolderImage = UIImage(named: "PlaceholderPhoto")
+        //let placeHolderImage = UIImage(named: "PlaceholderPhoto")
         
-        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        //let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("FlickrPhotoCell", forIndexPath: indexPath) as! FlickrPhotoCell
-
-        cell.imageView.image = placeHolderImage
-
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            cell .imageView.image = UIImage(data: photo.photo!)
-            
-        })
+        
+        configureCell(cell, indexPath: indexPath)
         
         return cell
 
@@ -139,6 +135,39 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         theCollectionView.reloadData()
     }
     
+    func configureCell(cell: FlickrPhotoCell, indexPath: NSIndexPath) {
+        var photoImage = UIImage(named: "PlaceholderPhoto")
+
+        //Get photo from fetched results
+        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        
+        //Checks if photo was saved in coredata or needs to be downloaded
+        if photo.photoURL == nil || photo.photoURL == "" {
+            photoImage = UIImage(named: "PlaceholderPhoto")
+        } else if photo.photo != nil {
+            photoImage = UIImage(data: photo.photo!)
+        } else {
+            let url = NSURL(string: photo.photoURL!)
+            let task = NSURLSession.sharedSession().dataTaskWithURL(url!, completionHandler: { (data, response, error) in
+                guard (error == nil) else {
+                    return
+                }
+                
+                if let data = data {
+                    photo.photo = data
+                    photoImage = UIImage(data: data)
+                    
+                    dispatch_async(dispatch_get_main_queue()) {
+                        cell.imageView!.image = photoImage
+                    }
+                }
+            })
+            task.resume()
+        }
+        
+        cell.imageView!.image = photoImage
+    }
+    
     func downloadPhotosFromFlicker() {
         
         if let location = location {
@@ -156,19 +185,10 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                     self.linkArray = results as! [String]
                     
                     for link in self.linkArray {
-                        let url = NSURL(string: link)
-                        if let url = url {
-
-                        let data = NSData(contentsOfURL: url)
-                        let photo = Photo(data: data!, photoURL: link, context: appDel.managedObjectContext)
-                        photo.pin = self.selectedPin
                         
-                        print(self.selectedPin.photos?.count)
-                            
-                        } else {
-                            //Display error that we wouldnt save the photo
-                            print("Couldnt save the photo")
-                        }
+                        let photo = Photo(photoURL: link, context: appDel.managedObjectContext)
+                        photo.pin = self.selectedPin
+
                     }
                     
                     appDel.saveContext()
@@ -206,7 +226,7 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     }
     
     
-    @IBAction func saveCollection(sender: AnyObject) {
+    @IBAction func newCollection(sender: AnyObject) {
         selectedPhotos.removeAll()
         
         do {
@@ -244,10 +264,6 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         
         return frc
     }()
-    
-    //IF app gets too large, this will clear the cache
-    override func didReceiveMemoryWarning() {
-        FlickrClient.sharedInstance().imageCache.removeAllObjects()
-    }
+
 }
 
