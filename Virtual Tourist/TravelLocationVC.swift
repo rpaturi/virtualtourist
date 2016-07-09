@@ -19,16 +19,20 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
     var pin: Pin?
     var pinArray: [Pin]?
     var locationCoordinate: CLLocationCoordinate2D?
+    var editingState: Bool = false
     
     let flickrClient = FlickrClient()
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var doneEditingButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         mapView.mapType = .Standard
         attemptFetch()
+        
+        doneEditingButton.hidden = true
     }
     
 
@@ -115,6 +119,7 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: pinReuseID)
             pinView?.animatesDrop = true
+            
         } else {
             pinView?.annotation = annotation
         }
@@ -130,18 +135,29 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
             if let pinArry = pinArray {
                 for pin in pinArry {
                     if pin.latitude == locationCoordinate!.latitude && pin.longitude == locationCoordinate!.longitude {
-                        self.pin = pin
-                        //print("I am print the \(self.pin)")
+                        if editingState == true {
+                            
+                            appDel.managedObjectContext.deleteObject(pin)
+                            
+                            do {
+                                try appDel.managedObjectContext.save()
+                                
+                            }catch {
+                                //EEROR ALERT
+                            }
+                            
+                            mapView.removeAnnotation(view.annotation!)
+                        } else {
+                            self.pin = pin
+                            self.performSegueWithIdentifier("sendPinLocation", sender: self)
+                        }
                     }
                 }
             }
-            //print("I am printing the pin from didSelectAnnotation: \(pin)")
-            self.performSegueWithIdentifier("sendPinLocation", sender: self)
         } else {
             //print("Sorry we couldnt send the annoation location via segue")
         }
     }
-    
     // MARK: - Fetch Results Controller
     
     //Execute fetchRequest and use results returned from setFetchRequest
@@ -183,6 +199,17 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
         controller.delegate = self
         
         fetchResultsController = controller
+    }
+    
+    @IBAction func editPin(sender: AnyObject) {
+        editingState = true
+        doneEditingButton.hidden = false
+    }
+    
+    
+    @IBAction func doneEditing(sender: AnyObject) {
+        editingState = false
+        doneEditingButton.hidden = true
     }
     
     //MARK: Send loaction information via "sendPinLocation" segue

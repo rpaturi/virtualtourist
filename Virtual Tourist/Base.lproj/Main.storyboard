@@ -25,17 +25,40 @@
                                     <outletCollection property="gestureRecognizers" destination="lZW-eF-crv" appends="YES" id="ksU-dw-yuy"/>
                                 </connections>
                             </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zD1-jR-F56">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="x7L-wR-7vp"/>
+                                </constraints>
+                                <state key="normal" title="Done Editing">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="doneEditing:" destination="BYZ-38-t0r" eventType="touchUpInside" id="k36-wk-8m9"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="mJx-JV-KG8" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="2NV-yu-7CY"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="zD1-jR-F56" secondAttribute="bottom" id="EZn-78-TiV"/>
+                            <constraint firstItem="zD1-jR-F56" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="F1x-Ze-eDb"/>
                             <constraint firstItem="mJx-JV-KG8" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="GMI-XI-9Pf"/>
+                            <constraint firstAttribute="trailing" secondItem="zD1-jR-F56" secondAttribute="trailing" id="HyK-5N-HeO"/>
                             <constraint firstAttribute="trailing" secondItem="mJx-JV-KG8" secondAttribute="trailing" id="UIS-QZ-AZR"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="mJx-JV-KG8" secondAttribute="bottom" id="kes-wS-4xB"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Drop a Pin" id="kEQ-4j-KWg"/>
+                    <navigationItem key="navigationItem" title="Drop a Pin" id="kEQ-4j-KWg">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="LpF-lJ-fFM">
+                            <connections>
+                                <action selector="editPin:" destination="BYZ-38-t0r" id="nxC-v3-ZWs"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="doneEditingButton" destination="zD1-jR-F56" id="X3z-2m-Sv9"/>
                         <outlet property="mapView" destination="mJx-JV-KG8" id="0vr-l9-BPH"/>
                         <segue destination="Fd9-qq-qy3" kind="show" identifier="sendPinLocation" id="lmY-0M-HLg"/>
                     </connections>
@@ -109,13 +132,13 @@
                                     <outlet property="delegate" destination="Fd9-qq-qy3" id="kgC-Z5-Mm4"/>
                                 </connections>
                             </collectionView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JQj-7x-dY7">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JQj-7x-dY7" userLabel="New Collection Button">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <color key="backgroundColor" red="0.01176470588" green="0.70196078429999997" blue="0.89411764709999997" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="phs-Gj-gkn"/>
                                 </constraints>
-                                <state key="normal" title="Save Collection">
+                                <state key="normal" title="New Collection">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
