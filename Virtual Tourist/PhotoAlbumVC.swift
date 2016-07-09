@@ -147,11 +147,10 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         } else if photo.photo != nil {
             photoImage = UIImage(data: photo.photo!)
         } else {
-            let url = NSURL(string: photo.photoURL!)
-            let task = NSURLSession.sharedSession().dataTaskWithURL(url!, completionHandler: { (data, response, error) in
-                guard (error == nil) else {
-                    return
-                }
+            FlickrClient.sharedInstance().taskToDownloadPhotos(photo.photoURL!, completionHandlerForDownloadPhotos: { (data, error) in
+                    guard (error == nil) else {
+                        return
+                    }
                 
                 if let data = data {
                     photo.photo = data
@@ -162,7 +161,6 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                     }
                 }
             })
-            task.resume()
         }
         
         cell.imageView!.image = photoImage
