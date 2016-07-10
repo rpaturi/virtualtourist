@@ -45,7 +45,10 @@ extension FlickrClient {
                 return
             }
             
-            let randomPage = Int(arc4random_uniform(UInt32(totalPages + 1)))
+            let pageLimit = min(totalPages, 40)
+            let randomPage = Int(arc4random_uniform(UInt32(pageLimit))) + 1
+            
+            print(randomPage)
             
             FlickrClient.sharedInstance().searchPhotoByLocationWithPage(latitude, longitude: longitude, page: randomPage, completionHandlerForSearchWithPage: { (result, error) in
                 guard (error == nil) else {

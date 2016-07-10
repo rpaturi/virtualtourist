@@ -243,8 +243,16 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
             appDel.managedObjectContext.deleteObject(photo)
         }
         
-        downloadPhotosFromFlicker()
+        do {
+            try appDel.managedObjectContext.save()
+        }catch {
+            dispatch_async(dispatch_get_main_queue(), {
+                createAlertError("Cannot Save", message: "Sorry! We there was an error when the new collection was being saved")
+            })
+        }
         
+        self.downloadPhotosFromFlicker()
+
         determineButton()
     }
     
