@@ -154,6 +154,8 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                     appDel.managedObjectContext.performBlock({ 
                         photo.photo = data
                         photoImage = UIImage(data: data)
+                        
+                        appDel.saveContext()
                     })
                     
                     dispatch_async(dispatch_get_main_queue()) {
@@ -197,14 +199,7 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                             }
                             appDel.saveContext()
                         })
-//                        for link in self.linkArray {
-//                            
-//                            let photo = Photo(photoURL: link, context: appDel.managedObjectContext)
-//                            photo.pin = self.selectedPin
-//                            
-//                        }
                     }
-                    //appDel.saveContext()
                 }
             })
         }

@@ -26,6 +26,8 @@ extension FlickrClient {
         static let Longitude = "lon"
         static let Format = "format"
         static let NoJSONCallback = "nojsoncallback"
+        static let PerPage = "per_page"
+        static let Page = "page"
     }
     
     struct FlickrParameterValues {
@@ -33,6 +35,7 @@ extension FlickrClient {
         static let FormatResponse = "json"
         static let DisableJSONCallback = "1" /* 1 means "yes" */
         static let PhotoSearchMethod = "flickr.photos.search"
+        static let PerPageNumber = 21
     }
     
     struct JSONResponseKeys {

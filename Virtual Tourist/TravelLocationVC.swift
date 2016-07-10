@@ -91,18 +91,26 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
                 } else {
                     annotation.title = "\(city), \(country)"
                 }
+                
                 self.mapView.addAnnotation(annotation)
                 
-                self.pin = Pin(latitude: touchCoordinate.latitude, longitude: touchCoordinate.longitude, title: annotation.title!, context: appDel.managedObjectContext)
+                appDel.managedObjectContext.performBlock({ 
+                    self.pin = Pin(latitude: touchCoordinate.latitude, longitude: touchCoordinate.longitude, title: annotation.title!, context: appDel.managedObjectContext)
+                    
+                    do {
+                        try appDel.managedObjectContext.save()
+                    } catch {
+                        abort()
+                    }
+                })
                 
-                do {
-                    try appDel.managedObjectContext.save()
-                } catch {
-                    abort()
+                self.mapView.deselectAnnotation(annotation, animated: false)
+                
+                dispatch_async(dispatch_get_main_queue()) {
+                    //Send CLCoordinate2D location information to the PhotoAlbumVC
+                    self.performSegueWithIdentifier("sendPinLocation", sender: sender)
+                    
                 }
-                
-                //Send CLCoordinate2D location information to the PhotoAlbumVC
-                self.performSegueWithIdentifier("sendPinLocation", sender: sender)
             }
         }
     }
@@ -144,6 +152,7 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
                                 mapView.removeAnnotation(view.annotation!)
                             })
                         } else {
+                            mapView.deselectAnnotation(view.annotation, animated: false)
                             self.pin = pin
                             self.performSegueWithIdentifier("sendPinLocation", sender: self)
                         }
@@ -154,6 +163,7 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
             //print("Sorry we couldnt send the annoation location via segue")
         }
     }
+    
     // MARK: - Fetch Results Controller
     
     //Execute fetchRequest and use results returned from setFetchRequest

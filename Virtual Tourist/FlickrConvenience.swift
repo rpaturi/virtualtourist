@@ -18,7 +18,8 @@ extension FlickrClient {
             FlickrClient.FlickrParameterKeys.Latitude: latitude,
             FlickrClient.FlickrParameterKeys.Longitude : longitude,
             FlickrClient.FlickrParameterKeys.Format : FlickrClient.FlickrParameterValues.FormatResponse,
-            FlickrClient.FlickrParameterKeys.NoJSONCallback : FlickrClient.FlickrParameterValues.DisableJSONCallback
+            FlickrClient.FlickrParameterKeys.NoJSONCallback : FlickrClient.FlickrParameterValues.DisableJSONCallback,
+            FlickrClient.FlickrParameterKeys.PerPage : FlickrClient.FlickrParameterValues.PerPageNumber
         ]
         
         taskForGetMethod("", parameters: parameters) { (result, error) in
@@ -39,15 +40,66 @@ extension FlickrClient {
                 return
             }
             
+            guard let totalPages = photosArray["pages"] as? Int else {
+                print("We could not find the 'pages' key in \(photosArray["pages"])")
+                return
+            }
+            
+            let randomPage = Int(arc4random_uniform(UInt32(totalPages + 1)))
+            
+            FlickrClient.sharedInstance().searchPhotoByLocationWithPage(latitude, longitude: longitude, page: randomPage, completionHandlerForSearchWithPage: { (result, error) in
+                guard (error == nil) else {
+                    return
+                }
+                
+                if let results = result {
+                    let downloadLinks = results as! [String]
+                    
+                    completionHandlerForSearch(result: downloadLinks, error: nil)
+                }
+            })
+        }
+    }
+    
+    func searchPhotoByLocationWithPage(latitude: Double, longitude: Double, page: Int, completionHandlerForSearchWithPage: (result: AnyObject?, error: NSError?) -> Void) {
+        let parameters: [String:AnyObject] = [
+            FlickrClient.FlickrParameterKeys.Method : FlickrClient.FlickrParameterValues.PhotoSearchMethod,
+            FlickrClient.FlickrParameterKeys.ApiKey: FlickrClient.FlickrParameterValues.APIKey,
+            FlickrClient.FlickrParameterKeys.Latitude: latitude,
+            FlickrClient.FlickrParameterKeys.Longitude : longitude,
+            FlickrClient.FlickrParameterKeys.Format : FlickrClient.FlickrParameterValues.FormatResponse,
+            FlickrClient.FlickrParameterKeys.NoJSONCallback : FlickrClient.FlickrParameterValues.DisableJSONCallback,
+            FlickrClient.FlickrParameterKeys.PerPage : FlickrClient.FlickrParameterValues.PerPageNumber,
+            FlickrClient.FlickrParameterKeys.Page : "\(page)"
+        ]
+        
+        taskForGetMethod("", parameters: parameters) { (result, error) in
+            guard (error == nil) else {
+                completionHandlerForSearchWithPage(result: nil, error: error)
+                print("\(error?.userInfo)")
+                return
+            }
+            
+            guard let result = result else {
+                print("Sorry we didnt get a result from searchByPhoto")
+                return
+            }
+            
+            guard let photosArray = result["photos"] as? [String : AnyObject] else {
+                completionHandlerForSearchWithPage(result: nil, error: error)
+                print("We could not find the 'photos' key in \(result["photos"])")
+                return
+            }
+            
             guard let photoArray = photosArray["photo"] as? [[String:AnyObject]] else {
-                completionHandlerForSearch(result: nil, error: error)
+                completionHandlerForSearchWithPage(result: nil, error: error)
                 print("We could not find the 'photo' key in \(photosArray["photo"])")
                 return
             }
             
             let photoDownloadLinks = self.createDownloadLinkFromResults(photoArray)
             
-            completionHandlerForSearch(result: photoDownloadLinks, error: nil)
+            completionHandlerForSearchWithPage(result: photoDownloadLinks, error: nil)
             
         }
     }
