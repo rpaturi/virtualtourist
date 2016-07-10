@@ -151,8 +151,10 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                     }
                 
                 if let data = data {
-                    photo.photo = data
-                    photoImage = UIImage(data: data)
+                    appDel.managedObjectContext.performBlock({ 
+                        photo.photo = data
+                        photoImage = UIImage(data: data)
+                    })
                     
                     dispatch_async(dispatch_get_main_queue()) {
                         cell.imageView!.image = photoImage
@@ -185,14 +187,24 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                             createAlertError("No Photos Found", message: "Sorry! We couldn't find any photos for this location")
                         })
                     } else {
-                        for link in self.linkArray {
-                            
-                            let photo = Photo(photoURL: link, context: appDel.managedObjectContext)
-                            photo.pin = self.selectedPin
-                            
-                        }
+                        
+                        appDel.managedObjectContext.performBlock({ 
+                            for link in self.linkArray {
+                                
+                                let photo = Photo(photoURL: link, context: appDel.managedObjectContext)
+                                photo.pin = self.selectedPin
+                                
+                            }
+                            appDel.saveContext()
+                        })
+//                        for link in self.linkArray {
+//                            
+//                            let photo = Photo(photoURL: link, context: appDel.managedObjectContext)
+//                            photo.pin = self.selectedPin
+//                            
+//                        }
                     }
-                    appDel.saveContext()
+                    //appDel.saveContext()
                 }
             })
         }
