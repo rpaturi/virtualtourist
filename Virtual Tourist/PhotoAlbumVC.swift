@@ -12,7 +12,6 @@ import CoreData
 
 class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, NSFetchedResultsControllerDelegate{
     
-    var fetchResultsController: NSFetchedResultsController!
     var selectedPin : Pin!
     var selectedPhotos: [NSIndexPath] = []
     
@@ -227,12 +226,13 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     @IBAction func newCollection(sender: AnyObject) {
         selectedPhotos.removeAll()
         
-        do {
-            try appDel.managedObjectContext.save()
-            
-        }catch {
-            //EEROR ALERT
+        let photos = fetchedResultsController.fetchedObjects as! [Photo]
+        
+        for photo in photos {
+            appDel.managedObjectContext.deleteObject(photo)
         }
+        
+        downloadPhotosFromFlicker()
         
         determineButton()
     }
