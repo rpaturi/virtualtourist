@@ -76,7 +76,6 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         removePhotoButton.hidden = true
         saveCollectionButton.hidden = false
         
-        //attemptPhotoFetch()
         do {
             try fetchedResultsController.performFetch()
         } catch {
@@ -96,9 +95,6 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        //let placeHolderImage = UIImage(named: "PlaceholderPhoto")
-        
-        //let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("FlickrPhotoCell", forIndexPath: indexPath) as! FlickrPhotoCell
         
@@ -148,6 +144,9 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         } else {
             FlickrClient.sharedInstance().taskToDownloadPhotos(photo.photoURL!, completionHandlerForDownloadPhotos: { (data, error) in
                     guard (error == nil) else {
+                        dispatch_async(dispatch_get_main_queue(), {
+                            createAlertError("No Photo Found", message: "Sorry! We couldn't find some of the photos.")
+                        })
                         return
                     }
                 
@@ -181,16 +180,19 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                     
                     self.linkArray = results as! [String]
                     
-                    for link in self.linkArray {
-                        
-                        let photo = Photo(photoURL: link, context: appDel.managedObjectContext)
-                        photo.pin = self.selectedPin
-
+                    if self.linkArray.count == 0 {
+                        dispatch_async(dispatch_get_main_queue(), {
+                            createAlertError("No Photos Found", message: "Sorry! We couldn't find any photos for this location")
+                        })
+                    } else {
+                        for link in self.linkArray {
+                            
+                            let photo = Photo(photoURL: link, context: appDel.managedObjectContext)
+                            photo.pin = self.selectedPin
+                            
+                        }
                     }
-                    
                     appDel.saveContext()
-                } else {
-                    print("There were no results passed in from the completionHandlerForGet")
                 }
             })
         }
@@ -215,7 +217,9 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
             try appDel.managedObjectContext.save()
             
         }catch {
-            //EEROR ALERT
+            dispatch_async(dispatch_get_main_queue(), {
+                createAlertError("Cannot Save", message: "Sorry! We there was an error when the new collection was being saved")
+            })
         }
         
         determineButton()

@@ -28,7 +28,6 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         mapView.mapType = .Standard
         attemptFetch()
         
@@ -61,6 +60,9 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
             geocoder.reverseGeocodeLocation(touchCLLocation) { (placemarks, error) in
                 guard (error == nil) else {
                     print("There was an error: \(error?.userInfo)")
+                    dispatch_async(dispatch_get_main_queue(), {
+                        createAlertError("No Location Found", message: "Sorry! We couldn't find your location")
+                    })
                     return
                 }
                 
@@ -92,13 +94,10 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
                 self.mapView.addAnnotation(annotation)
                 
                 self.pin = Pin(latitude: touchCoordinate.latitude, longitude: touchCoordinate.longitude, title: annotation.title!, context: appDel.managedObjectContext)
-                //print(self.pin)
                 
                 do {
                     try appDel.managedObjectContext.save()
-                    //print("we saved the pin!")
                 } catch {
-                    //print("We couldnt save the pin!")
                     abort()
                 }
                 
@@ -139,12 +138,8 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
                             
                             appDel.managedObjectContext.deleteObject(pin)
                             
-                            do {
-                                try appDel.managedObjectContext.save()
-                                
-                            }catch {
-                                //EEROR ALERT
-                            }
+                            appDel.saveContext()
+                            
                             dispatch_async(dispatch_get_main_queue(), { 
                                 mapView.removeAnnotation(view.annotation!)
                             })
@@ -184,6 +179,9 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
             
         } catch {
             print("Error executing fetch request: \(error)")
+            dispatch_async(dispatch_get_main_queue(), { 
+                createAlertError("No Results", message: "Sorry! We couldn't find any results")
+            })
         }
         
     }
@@ -219,7 +217,6 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
         if segue.identifier == "sendPinLocation" {
             if let photoVC = segue.destinationViewController as? PhotoAlbumVC {
                 photoVC.selectedPin = pin
-                //print("I am printing the pin from photoVC: \(photoVC.selectedPin)")
                 photoVC.location = locationCoordinate
             }
         }
