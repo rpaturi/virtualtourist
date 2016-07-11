@@ -128,6 +128,8 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        attemptFetch()
+        
         if view.annotation != nil {
             
             locationCoordinate = view.annotation?.coordinate
