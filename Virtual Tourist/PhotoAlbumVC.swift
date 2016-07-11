@@ -14,6 +14,9 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
     
     var selectedPin : Pin!
     var selectedPhotos: [NSIndexPath] = []
+    var insertedIndexPaths:[NSIndexPath] = []
+    var updatedIndexPaths:[NSIndexPath] = []
+    var deletedIndexPaths:[NSIndexPath] = []
     
     var linkArray: [String] = []
     var location: CLLocationCoordinate2D?
@@ -126,10 +129,6 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
         determineButton()
     }
     
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        theCollectionView.reloadData()
-    }
-    
     func configureCell(cell: FlickrPhotoCell, indexPath: NSIndexPath) {
         var photoImage = UIImage(named: "PlaceholderPhoto")
 
@@ -178,8 +177,6 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                     return
                 }
                 
-                //TODO: Alert if no photos were returned
-                
                 if let results = result {
                     
                     self.linkArray = results as! [String]
@@ -203,6 +200,54 @@ class PhotoAlbumVC: UIViewController, MKMapViewDelegate, UICollectionViewDelegat
                 }
             })
         }
+    }
+    
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        insertedIndexPaths = [NSIndexPath]()
+        deletedIndexPaths = [NSIndexPath]()
+        updatedIndexPaths = [NSIndexPath]()
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+     
+        switch type {
+            case .Insert:
+                insertedIndexPaths.append(newIndexPath!)
+                break
+                
+            case .Delete:
+                deletedIndexPaths.append(indexPath!)
+                break
+                
+            case .Update:
+                updatedIndexPaths.append(indexPath!)
+                break
+                
+            case .Move:
+                
+                break
+                
+            default:
+                break
+        }
+    }
+    
+    
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        theCollectionView.performBatchUpdates({ 
+            for indexPath in self.insertedIndexPaths {
+                self.theCollectionView.insertItemsAtIndexPaths([indexPath])
+            }
+            
+            for indexPath in self.deletedIndexPaths {
+                self.theCollectionView.deleteItemsAtIndexPaths([indexPath])
+            }
+            
+            for indexPath in self.updatedIndexPaths {
+                self.theCollectionView.reloadItemsAtIndexPaths([indexPath])
+            }
+            
+            }, completion: nil)
     }
     
     @IBAction func removePhotosFromCollection(sender: AnyObject) {

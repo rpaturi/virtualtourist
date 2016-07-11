@@ -93,6 +93,7 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
                 }
                 
                 self.mapView.addAnnotation(annotation)
+                self.mapView.deselectAnnotation(annotation, animated: false)
                 
                 appDel.managedObjectContext.performBlock({ 
                     self.pin = Pin(latitude: touchCoordinate.latitude, longitude: touchCoordinate.longitude, title: annotation.title!, context: appDel.managedObjectContext)
@@ -103,14 +104,6 @@ class TravelLocationVC: UIViewController, MKMapViewDelegate, NSFetchedResultsCon
                         abort()
                     }
                 })
-                
-                self.mapView.deselectAnnotation(annotation, animated: false)
-                
-                dispatch_async(dispatch_get_main_queue()) {
-                    //Send CLCoordinate2D location information to the PhotoAlbumVC
-                    self.performSegueWithIdentifier("sendPinLocation", sender: sender)
-                    
-                }
             }
         }
     }
